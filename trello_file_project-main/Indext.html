@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Container for the title input */
+        .title-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .title-input {
+            flex: 1;
+            padding: 8px;
+            font-size: 18px;
+        }
+
+        .title-btn {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Add some basic styling for the columns and cards */
+        .column {
+            float: left;
+            width: 30%;
+            padding: 10px;
+        }
+        
+        .task-card {
+            background-color: #f7f7f7;
+            padding: 10px;
+            margin: 5px;
+        }
+        
+        /* Add some basic styling for the text boxes and dropdown */
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        /* Add some basic styling for the buttons */
+        .submit-btn, .delete-btn, .update-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .delete-btn{
+            background-color: red;
+        }
+        
+        .update-btn{
+            background-color: blue;
+        }
+        
+        /* Style the buttons on hover */
+        .submit-btn:hover, .delete-btn:hover, .update-btn:hover {
+            background-color: #0c0908;
+        }
+    </style>
+</head>
+<body>
+    <!-- Title Container -->
+    <div class="title-container">
+        <input type="text" id="site-title" class="title-input" placeholder="Enter Title">
+        <button class="title-btn" onclick="updateTitle()">Set Title</button>
+    </div>
+
+    <!-- Display the title entered above -->
+    <h1 id="main-title">Task Management System</h1>
+    
+    <div class="row">
+        <div class="column todo-column">
+            <h2>TODO</h2>
+            <!-- Placeholder for TODO tasks -->
+        </div>
+        <div class="column in-progress-column">
+            <h2>IN PROGRESS</h2>
+            <!-- Placeholder for IN PROGRESS tasks -->
+        </div>
+        <div class="column done-column">
+            <h2>DONE</h2>
+            <!-- Placeholder for DONE tasks -->
+        </div>
+    </div>
+
+    <!-- Add text boxes, dropdown, and submit button below the three columns -->
+    <div style="margin-top: 20px;">
+        <input type="text" id="task-title" placeholder="Task Title">
+    </div>
+    <div>
+        <input type="text" id="task-description" placeholder="Task Description">
+    </div>
+    <div>
+        <select id="task-priority">
+            <option value="high">TODO</option>
+            <option value="medium">IN PROGRESS</option>
+            <option value="low">DONE</option>
+        </select>
+    </div>
+    <div>
+        <button class="submit-btn" onclick="addTask()">Submit</button>
+    </div>
+    <div>
+        <input type="text" id="delete-task-id" placeholder="Enter Task ID to Delete">
+        <button class="delete-btn" onclick="deleteTask()">Delete</button>
+    </div>
+    <div>
+        <input type="text" id="update-task-id" placeholder="Enter Task ID to Update">
+        <input type="text" id="update-task-title" placeholder="New Task Title">
+        <input type="text" id="update-task-description" placeholder="New Task Description">
+        <select id="update-task-priority">
+            <option value="high">TODO</option>
+            <option value="medium">IN PROGRESS</option>
+            <option value="low">DONE</option>
+        </select>
+        <button class="update-btn" onclick="updateTask()">Update</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
