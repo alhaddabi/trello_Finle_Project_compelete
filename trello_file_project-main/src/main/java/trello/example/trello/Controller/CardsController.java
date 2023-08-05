@@ -56,14 +56,25 @@ public class CardsController {
 
 
     // update the cards
-    @PutMapping("/{cardsId}")
-    public ResponseEntity<GetCardsResponse> updateCards(@PathVariable Long cardId, @RequestBody GetCardsRequest updateCards) {
-        GetCardsResponse response = cardsService.updateCards(cardId, updateCards);
-        if (response != null) {
-            return ResponseEntity.ok(response);
-        } else
-        {
-            return ResponseEntity.notFound().build();
+    @PutMapping("/{board_id}/cards/{card_id}")
+    public ResponseEntity<GetCardsResponse> updateCardOnBoard(
+            @PathVariable("board_id") Long boardId,
+            @PathVariable("card_id") Long cardId,
+            @RequestBody GetCardsRequest updatedCardRequest
+    ) {
+        // Update the card using the cardService
+        Cards updatedCard = cardsService.updateCardOnBoard(boardId, cardId, updatedCardRequest);
+
+        if (updatedCard != null) {
+            // Prepare the response body
+            GetCardsResponse response = new GetCardsResponse();
+            response.setTitle(updatedCard.getTitle());
+            response.setDescription(updatedCard.getDescription());
+            response.setSection(updatedCard.getSection());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

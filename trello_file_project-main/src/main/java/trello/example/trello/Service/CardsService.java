@@ -81,4 +81,23 @@ public class CardsService {
         }
         return null;
     }
+    public Cards updateCardOnBoard(Long boardId, Long cardId, GetCardsRequest updatedCardRequest) {
+        Optional<Cards> optionalCard = cardsRepository.findById(cardId);
+
+        if (optionalCard.isPresent()) {
+            Cards existingCard = optionalCard.get();
+
+            // Update the card properties with the updatedCardRequest values
+            existingCard.setTitle(updatedCardRequest.getTitle());
+            existingCard.setDescription(updatedCardRequest.getDescription());
+            existingCard.setSection(updatedCardRequest.getSection());
+
+            // Save the updated card to the database
+            Cards updatedCard = cardsRepository.save(existingCard);
+
+            return updatedCard;
+        }
+
+        return null; // Card not found
+    }
 }
