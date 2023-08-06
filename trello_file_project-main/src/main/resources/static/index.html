@@ -113,6 +113,9 @@
         <input type="text" id="task-description" placeholder="Task Description">
     </div>
     <div>
+        <input type="text" id="boards-number" placeholder="ALl the careds will be careted in the Board 1" readonly>
+    </div>
+    <div>
         <select id="task-priority">
             <option value="high">TODO</option>
             <option value="medium">IN PROGRESS</option>
@@ -120,7 +123,7 @@
         </select>
     </div>
     <div>
-        <button class="submit-btn" onclick="addTask()">Submit</button>
+        <button class="submit-btn" onclick="createCard()">Create cards</button>
     </div>
     <div>
         <input type="text" id="delete-task-id" placeholder="Enter Task ID to Delete">

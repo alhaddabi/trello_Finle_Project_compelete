@@ -23,6 +23,7 @@ public class CardsController {
     @Autowired
     CardsService cardsService;
 
+    // create the cards
     @PostMapping("/{board_id}")
     public ResponseEntity<GetCardsResponse> addCardToBoard(@PathVariable("board_id") Long boardId, @RequestBody GetCardsRequest cardRequest) {
         // Create a new Card object based on the request data

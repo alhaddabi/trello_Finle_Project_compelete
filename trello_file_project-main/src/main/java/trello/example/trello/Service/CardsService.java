@@ -23,7 +23,7 @@ public class CardsService {
     private static Map<Long, List<Cards>> boardToCardsMap = new HashMap<>();
 
     public Cards addCardToBoard(Long boardId, Cards newCard) {
-        newCard.setSection("2"); // Set the section (if required)
+//        newCard.setSection("2"); // Set the section (if required)
 
         // Save the card to the database using the repository
         Cards savedCard = cardsRepository.save(newCard);

@@ -27,7 +27,6 @@ public class BoardController {
     public ResponseEntity<GetBoardResponse> createBoard(@RequestBody GetBoardRequest request) {
         Board newBoard = new Board();
         newBoard.setTitle(request.getTitle());
-
         Board createdBoard = boardService.createBoard(newBoard);
 
         GetBoardResponse response = new GetBoardResponse();
