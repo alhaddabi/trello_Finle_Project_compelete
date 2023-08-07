@@ -8,9 +8,7 @@ async function createCard() {
     const cardTitle = document.getElementById('task-title').value;
     const cardDescription = document.getElementById('task-description').value;
     const taskPriority = document.getElementById('task-priority').value;
-
     let sectionNumber;
-
     switch (taskPriority) {
         case "high":
             sectionNumber = 1;
@@ -45,6 +43,7 @@ async function createCard() {
     try {
         const response = await fetch(`${base_url}/api/cards/${sectionNumber}`, requestOptions);
         const result = await response.json(); // Assuming the response is in JSON format
+
 
         if (response.ok) {
             console.log("Card created:", result);
@@ -88,6 +87,44 @@ function getContainerForSection(sectionNumber) {
 
 
 
+// Update the deleteTask function to use fetchDeleteTask
+async function deleteTask() {
+    const cardId = document.getElementById("delete-task-id").value;
+
+    if (!cardId) {
+        alert("Please enter the Task ID to delete.");
+        return;
+    }
+
+    try {
+        await fetchDeleteTask(cardId);
+    } catch (error) {
+        console.error('Error:', error.message);
+        alert('the cards with the ID '+ cardId +' have been deleted ');
+    }
+}
+// Define the fetchDeleteTask function
+async function fetchDeleteTask(cardId) {
+    const API_URL_DELETE_CARD = `${base_url}/api/cards/${cardId}`;
+    const url = API_URL_DELETE_CARD;
+
+    // Fetch response using API URL and HTTP method
+    const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        // Additional headers or credentials as needed
+    });
+
+    // If error, display error message
+    if (!response.ok) {
+        throw new Error(`HTTP error! status : ${response.status}`);
+    }
+
+    myModal.hide(); // Assuming you're using Bootstrap modal
+    window.location.reload();
+}
 
 
 
@@ -95,42 +132,6 @@ function getContainerForSection(sectionNumber) {
 
 
 
-
-
-//async function deleteTask() {
-//    const taskIdToDelete = document.getElementById("delete-task-id").value;
-//    if (!taskIdToDelete) {
-//        alert("Please enter the Task ID to delete.");
-//        return;
-//    }
-//
-//    const taskCardToDelete = document.getElementById("task-" + taskIdToDelete);
-//    if (taskCardToDelete) {
-//        taskCardToDelete.remove(); // Remove from UI
-//        console.log("Card with ID " + taskIdToDelete + " deleted from UI.");
-//
-//        // Delete the card from the server
-//        try {
-//            const response = await fetch(`${base_url}/api/cards/${taskIdToDelete}`, {
-//                method: 'DELETE',
-//                headers: {
-//                    'Content-Type': 'application/json'
-//                },
-//                // You might need to include additional headers or credentials as needed
-//            });
-//
-//            if (response.ok) {
-//                console.log("Card deleted from the server.");
-//            } else {
-//                console.error('Error:', response.status);
-//            }
-//        } catch (error) {
-//            console.error('Error:', error.message);
-//        }
-//    } else {
-//        alert("Task with ID " + taskIdToDelete + " not found.");
-//    }
-//}
 
 async function displayCardsBySection() {
     try {
@@ -155,7 +156,7 @@ async function displayCardsBySection() {
             const cardElement = document.createElement('div');
             cardElement.classList.add('task-card'); // Add the 'task-card' class for styling
             cardElement.innerHTML = `
-                <h3>Card ID: ${card.id}</h3>
+                <h3>Card ID:${card.cardId}</h3>
                 <p>Title: ${card.title}</p>
                 <p>Description: ${card.description}</p>
             `;
@@ -254,21 +255,25 @@ function createTaskCard(id, title, description) {
     return card;
 }
 
-// Function to delete a task
-function deleteTask() {
-    const taskIdToDelete = document.getElementById("delete-task-id").value;
-    if (!taskIdToDelete) {
-        alert("Please enter the Task ID to delete.");
-        return;
-    }
 
-    const taskCardToDelete = document.getElementById("task-" + taskIdToDelete);
-    if (taskCardToDelete) {
-        taskCardToDelete.remove();
-    } else {
-        alert("Task with ID " + taskIdToDelete + " not found.");
-    }
-}
+
+// Function to delete a cards
+//function deleteTask(){
+//    const cardId = document.getElementById("delete-task-id").value;
+//    if (!cardId) {
+//        alert("Please enter the Task ID to delete.");
+//        return;
+//    }
+//    const taskCardToDelete = document.getElementById("task-" + cardId);
+//    if (taskCardToDelete) {
+//        taskCardToDelete.remove();
+//    } else {
+//        alert("Task with ID " + cardId + " not found.");
+//    }
+//}
+
+
+
 
 // Function to update a task
 function updateTask() {
@@ -277,7 +282,6 @@ function updateTask() {
         alert("Please enter the Task ID to update.");
         return;
     }
-
     const taskCardToUpdate = document.getElementById("task-" + taskIdToUpdate);
     if (!taskCardToUpdate) {
         alert("Task with ID " + taskIdToUpdate + " not found.");
