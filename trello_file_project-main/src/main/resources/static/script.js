@@ -1,9 +1,10 @@
 const base_url = "http://localhost:8080";
 const createButton = document.getElementById('create-button');
 
-createButton.addEventListener('click', createCard);
-
 async function createCard() {
+    // Disable the button to prevent multiple clicks
+    createButton.disabled = true;
+
     const cardTitle = document.getElementById('task-title').value;
     const cardDescription = document.getElementById('task-description').value;
     const taskPriority = document.getElementById('task-priority').value;
@@ -11,17 +12,17 @@ async function createCard() {
     let sectionNumber;
 
     switch (taskPriority) {
-        case "high": // TODO
+        case "high":
             sectionNumber = 1;
             break;
-        case "medium": // IN PROGRESS
+        case "medium":
             sectionNumber = 2;
             break;
-        case "low": // DONE
+        case "low":
             sectionNumber = 3;
             break;
         default:
-            sectionNumber = 1; // Default to TODO
+            sectionNumber = 1;
             break;
     }
 
@@ -31,7 +32,7 @@ async function createCard() {
     const raw = JSON.stringify({
       "title": cardTitle,
       "description": cardDescription,
-      "section": sectionNumber // Use the determined section number
+      "section": sectionNumber
     });
 
     const requestOptions = {
@@ -42,17 +43,43 @@ async function createCard() {
     };
 
     try {
-        const response = await fetch(`${base_url}/api/cards/${sectionNumber}`, requestOptions); // Use base_url
-        const result = await response.text();
+        const response = await fetch(`${base_url}/api/cards/${sectionNumber}`, requestOptions);
+        const result = await response.json(); // Assuming the response is in JSON format
+
         if (response.ok) {
             console.log("Card created:", result);
-            getAllBoards();
+
+            // Create a new task card with the returned ID
+            const cardElement = createTaskCard(result.id, cardTitle, cardDescription);
+            const container = getContainerForSection(sectionNumber);
+            container.appendChild(cardElement);
+
+            // Clear input fields
+            document.getElementById('task-title').value = "";
+            document.getElementById('task-description').value = "";
+
+            // Re-enable the button after card creation process
+            createButton.disabled = false;
         } else {
             console.error('Error:', response.status);
+            createButton.disabled = false; // Re-enable the button on error
         }
     } catch (error) {
         console.error('Error:', error.message);
+        createButton.disabled = false; // Re-enable the button on error
     }
+}
+
+// Helper function to get the container for a specific section
+function getContainerForSection(sectionNumber) {
+    if (sectionNumber === 1) {
+        return document.querySelector(".todo-column");
+    } else if (sectionNumber === 2) {
+        return document.querySelector(".in-progress-column");
+    } else if (sectionNumber === 3) {
+        return document.querySelector(".done-column");
+    }
+    return null;
 }
 
 
@@ -63,47 +90,49 @@ async function createCard() {
 
 
 
-function deleteTask() {
-    const taskIdToDelete = document.getElementById("delete-task-id").value;
-    if (!taskIdToDelete) {
-        alert("Please enter the Task ID to delete.");
-        return;
-    }
-
-    const taskCardToDelete = document.getElementById("task-" + taskIdToDelete);
-    if (taskCardToDelete) {
-        taskCardToDelete.remove(); // Remove from UI
-        console.log("Card with ID " + taskIdToDelete + " deleted from UI.");
-
-        // Additional code to delete the card from the server/database
-        // ...
-
-    } else {
-        alert("Task with ID " + taskIdToDelete + " not found.");
-    }
-
-
-    try {
-            const response = await fetch(`${base_url}/api/cards/${cardId}`, requestOptions); // Use base_url
-            const result = await response.text();
-            if (response.ok) {
-                console.log("Card created:", result);
-                getAllBoards();
-            } else {
-                console.error('Error:', response.status);
-            }
-        } catch (error) {
-            console.error('Error:', error.message);
-        }
-}
 
 
 
 
 
-// Function to display cards by section
+
+
+//async function deleteTask() {
+//    const taskIdToDelete = document.getElementById("delete-task-id").value;
+//    if (!taskIdToDelete) {
+//        alert("Please enter the Task ID to delete.");
+//        return;
+//    }
+//
+//    const taskCardToDelete = document.getElementById("task-" + taskIdToDelete);
+//    if (taskCardToDelete) {
+//        taskCardToDelete.remove(); // Remove from UI
+//        console.log("Card with ID " + taskIdToDelete + " deleted from UI.");
+//
+//        // Delete the card from the server
+//        try {
+//            const response = await fetch(`${base_url}/api/cards/${taskIdToDelete}`, {
+//                method: 'DELETE',
+//                headers: {
+//                    'Content-Type': 'application/json'
+//                },
+//                // You might need to include additional headers or credentials as needed
+//            });
+//
+//            if (response.ok) {
+//                console.log("Card deleted from the server.");
+//            } else {
+//                console.error('Error:', response.status);
+//            }
+//        } catch (error) {
+//            console.error('Error:', error.message);
+//        }
+//    } else {
+//        alert("Task with ID " + taskIdToDelete + " not found.");
+//    }
+//}
+
 async function displayCardsBySection() {
-    const base_url = "http://localhost:8080";
     try {
         const response = await fetch(`${base_url}/api/cards`);
         if (!response.ok) {
@@ -113,15 +142,15 @@ async function displayCardsBySection() {
 
         // Get the containers for each section
         const todoContainer = document.querySelector(".todo-column");
-        todoContainer.innerHTML = '<h2>TODO</h2>';
-
         const inProgressContainer = document.querySelector(".in-progress-column");
-        inProgressContainer.innerHTML = '<h2>IN PROGRESS</h2>';
-
         const doneContainer = document.querySelector(".done-column");
+
+        // Clear previous content in containers
+        todoContainer.innerHTML = '<h2>TODO</h2>';
+        inProgressContainer.innerHTML = '<h2>IN PROGRESS</h2>';
         doneContainer.innerHTML = '<h2>DONE</h2>';
 
-        // Loop through the cards and create HTML elements to display them
+        // Loop through each card and create card elements
         cards.forEach((card) => {
             const cardElement = document.createElement('div');
             cardElement.classList.add('task-card'); // Add the 'task-card' class for styling
@@ -132,11 +161,11 @@ async function displayCardsBySection() {
             `;
 
             // Add the card to the corresponding container based on the section
-            if (card.section === 1) {
+            if (card.section === "1") {
                 todoContainer.appendChild(cardElement);
-            } else if (card.section === 2) {
+            } else if (card.section === "2") {
                 inProgressContainer.appendChild(cardElement);
-            } else if (card.section === 3) {
+            } else if (card.section === "3") {
                 doneContainer.appendChild(cardElement);
             }
         });
@@ -146,8 +175,12 @@ async function displayCardsBySection() {
     }
 }
 
-// Initial call to fetch and display cards when the page loads
+// Make sure to call the function when the DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+
+});
 displayCardsBySection();
+
 
 
 
