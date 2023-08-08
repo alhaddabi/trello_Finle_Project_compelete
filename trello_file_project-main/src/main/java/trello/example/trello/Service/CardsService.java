@@ -2,12 +2,9 @@ package trello.example.trello.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import trello.example.trello.Models.Board;
 import trello.example.trello.Models.Cards;
 import trello.example.trello.Repository.CardsRepository;
-import trello.example.trello.RequestObject.GetBoardRequest;
 import trello.example.trello.RequestObject.GetCardsRequest;
-import trello.example.trello.ResponseObject.GetBoardResponse;
 import trello.example.trello.ResponseObject.GetCardsResponse;
 
 

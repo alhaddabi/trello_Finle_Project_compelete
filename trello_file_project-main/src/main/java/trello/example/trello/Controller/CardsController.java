@@ -5,11 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import trello.example.trello.Models.Board;
 import trello.example.trello.Models.Cards;
-import trello.example.trello.RequestObject.GetBoardRequest;
 import trello.example.trello.RequestObject.GetCardsRequest;
-import trello.example.trello.ResponseObject.GetBoardResponse;
 import trello.example.trello.ResponseObject.GetCardsResponse;
 import trello.example.trello.Service.CardsService;
 
@@ -17,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/cards")
-
+@CrossOrigin("*")
 public class CardsController {
 
     @Autowired
@@ -33,6 +30,7 @@ public class CardsController {
         newCard.setSection(cardRequest.getSection());
         Cards createdCard = cardsService.addCardToBoard(boardId, newCard);
         GetCardsResponse response = new GetCardsResponse();
+        response.setId(createdCard.getCardId());
         response.setTitle(createdCard.getTitle());
         response.setDescription(createdCard.getDescription());
         response.setSection(createdCard.getSection());

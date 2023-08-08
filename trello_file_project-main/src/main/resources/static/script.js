@@ -87,7 +87,6 @@ function getContainerForSection(sectionNumber) {
 
 
 
-// Update the deleteTask function to use fetchDeleteTask
 async function deleteTask() {
     const cardId = document.getElementById("delete-task-id").value;
 
@@ -188,10 +187,6 @@ displayCardsBySection();
 
 
 
-
-
-
-
 // Function to update the main title with the entered title
 function updateTitle() {
     const newTitle = document.getElementById("site-title").value;
@@ -199,6 +194,9 @@ function updateTitle() {
         document.getElementById("main-title").textContent = newTitle;
     }
 }
+
+
+
 
 // Function to add a task
 function addTask() {
@@ -240,7 +238,7 @@ function createTaskCard(id, title, description) {
 
     const taskCardId = document.createElement("div");
     taskCardId.classList.add("task-card-id");
-    taskCardId.textContent = "Task ID: " + id;
+    taskCardId.textContent = "Card ID: " + id;
     card.appendChild(taskCardId);
 
     const taskTitle = document.createElement("h3");
@@ -257,74 +255,67 @@ function createTaskCard(id, title, description) {
 
 
 
-// Function to delete a cards
-//function deleteTask(){
-//    const cardId = document.getElementById("delete-task-id").value;
-//    if (!cardId) {
-//        alert("Please enter the Task ID to delete.");
-//        return;
-//    }
-//    const taskCardToDelete = document.getElementById("task-" + cardId);
-//    if (taskCardToDelete) {
-//        taskCardToDelete.remove();
-//    } else {
-//        alert("Task with ID " + cardId + " not found.");
-//    }
-//}
 
 
+async function updateTask() {
+    const cardId = document.getElementById('update-task-id').value;
+    const boardId = document.getElementById('update-board-id').value;
+    const updatedCardTitle = document.getElementById('update-task-title').value;
+    const updatedCardDescription = document.getElementById('update-task-description').value;
+    const updatedSection = document.getElementById('update-task-priority').value; // Get selected section value from the dropdown
 
 
-// Function to update a task
-function updateTask() {
-    const taskIdToUpdate = document.getElementById("update-task-id").value;
-    if (!taskIdToUpdate) {
-        alert("Please enter the Task ID to update.");
-        return;
-    }
-    const taskCardToUpdate = document.getElementById("task-" + taskIdToUpdate);
-    if (!taskCardToUpdate) {
-        alert("Task with ID " + taskIdToUpdate + " not found.");
+    const sectionIdMap = {
+        'high': 1,
+        'medium': 2,
+        'low': 3,
+    };
+    const updatedSectionId = sectionIdMap[updatedSection];
+
+    if (!updatedSectionId) {
+        alert("Invalid section name.");
         return;
     }
 
-    const newTitle = document.getElementById("update-task-title").value;
-    const newDescription = document.getElementById("update-task-description").value;
-    const newPriority = document.getElementById("update-task-priority").value;
+    const cardData = {
+        title: updatedCardTitle,
+        section: updatedSectionId,
+        description: updatedCardDescription
+    };
 
-    const taskTitleElement = taskCardToUpdate.querySelector("h3");
-    const taskDescriptionElement = taskCardToUpdate.querySelector("p");
+    try {
+        const response = await fetch(`${base_url}/api/cards/${boardId}/cards/${cardId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(cardData),
+        });
 
-    if (newTitle) {
-        taskTitleElement.textContent = newTitle;
-    }
-    if (newDescription) {
-        taskDescriptionElement.textContent = newDescription;
-    }
-    if (newPriority) {
-        // Remove the task from the current column
-        const currentColumn = taskCardToUpdate.parentNode;
-        currentColumn.removeChild(taskCardToUpdate);
-
-        // Determine which column to add the task card to based on the updated priority
-        switch (newPriority) {
-            case "high":
-                document.querySelector(".todo-column").appendChild(taskCardToUpdate);
-                break;
-            case "medium":
-                document.querySelector(".in-progress-column").appendChild(taskCardToUpdate);
-                break;
-            case "low":
-                document.querySelector(".done-column").appendChild(taskCardToUpdate);
-                break;
-            default:
-                break;
+        if (response.ok) {
+            alert('Card updated successfully!');
+            await displayCardsBySection();
+        } else {
+            const errorData = await response.json();
+            alert(`Failed to update the card: ${errorData.message}`);
         }
+    } catch (error) {
+        console.error('Error updating the card:', error);
+        alert('An error occurred while updating the card.');
     }
-
-    // Clear the update input fields
-    document.getElementById("update-task-id").value = "";
-    document.getElementById("update-task-title").value = "";
-    document.getElementById("update-task-description").value = "";
-    document.getElementById("update-task-priority").value = "high";
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

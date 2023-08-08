@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetCardsRequest {
 
-    String Title ;
-    String Description ;
-    String Section ;
+    String title;
+    String description;
+    String section;
 }

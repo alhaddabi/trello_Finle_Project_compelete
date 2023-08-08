@@ -11,8 +11,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetCardsResponse {
-    String Title;
-    String Description;
-    String Section;
+    Long id;
+    String title;
+    String description;
+    String section;
 
 }
