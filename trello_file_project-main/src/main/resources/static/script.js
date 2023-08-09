@@ -1,4 +1,4 @@
-const base_url = "http://localhost:8080";
+const base_url = "http://localhost:9091";
 const createButton = document.getElementById('create-button');
 
 async function createCard() {
@@ -127,11 +127,6 @@ async function fetchDeleteTask(cardId) {
 
 
 
-
-
-
-
-
 async function displayCardsBySection() {
     try {
         const response = await fetch(`${base_url}/api/cards`);
@@ -177,9 +172,8 @@ async function displayCardsBySection() {
 
 // Make sure to call the function when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-
 });
-displayCardsBySection();
+displayCardsBySection()
 
 
 
@@ -192,6 +186,32 @@ function updateTitle() {
     const newTitle = document.getElementById("site-title").value;
     if (newTitle) {
         document.getElementById("main-title").textContent = newTitle;
+
+        // Prepare the request data
+        const requestData = {
+            title: newTitle
+        };
+
+        // Prepare headers for the fetch request
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        // Prepare the raw JSON data
+        const raw = JSON.stringify(requestData);
+
+        // Prepare the request options
+        const requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+
+        // Make the fetch request
+        fetch("http://localhost:8080/api/boards", requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
     }
 }
 
@@ -301,7 +321,7 @@ async function updateTask() {
         }
     } catch (error) {
         console.error('Error updating the card:', error);
-        alert('An error occurred while updating the card.');
+        alert('Please Enter correct ID .');
     }
 }
 
