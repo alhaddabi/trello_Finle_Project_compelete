@@ -1,4 +1,5 @@
-const base_url = "http://localhost:9091";
+let hostname = window.location.hostname;
+const base_url = "http://"+hostname+":9091";
 const createButton = document.getElementById('create-button');
 
 async function createCard() {
